@@ -14,7 +14,7 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 
 ### Part I: Preparation
 
-- [ ] Scaffold the project: put up a Vite-based system that will dev serve the project with hot reloading, can build the project ready for deployment and have index.html and index.js files that show a simple "Hello, World!"
+- [x] Scaffold the project: put up a Vite-based system that will dev serve the project with hot reloading, can build the project ready for deployment and have index.html and index.js files that show a simple "Hello, World!"
 - [ ] Add an HTML5 Canvas element to the project, set up a loop with requestNextAnimationFrame, and draw a triangle onto the canvas. I can use the moveTo/lineTo setup to draw wireframes at first, not having to deal with rasterization just yet.
 - [ ] Set up data structures to represent meshes and polygons in the scene we are going to set up.
 - [ ] Build the vec3 file with functions with which to manipulate 3D vectors, like addition, subtraction, scaling, multiplication, dot product and cross product.
