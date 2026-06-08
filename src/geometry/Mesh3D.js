@@ -1,5 +1,5 @@
 import { Polygon } from "./Polygon";
-// import { Mat4 } from "../math/Mat4";
+import { Mat4 } from "../math/Mat4";
 
 export class Mesh3D {
   constructor(data) {
@@ -10,27 +10,39 @@ export class Mesh3D {
     this.plist = data.polygons.map((polygon) => new Polygon(polygon));
   }
 
+  getPosition() {
+    return this.pos;
+  }
+
   setPosition(pos) {
     this.pos = { ...pos };
+  }
+
+  getRotation() {
+    return this.rot;
   }
 
   setRotation(rot) {
     this.rot = { ...rot };
   }
 
+  getScale() {
+    return this.scale;
+  }
+
   setScale(scale) {
     this.scale = scale;
   }
 
-  //   getModelMatrix() {
-  //     const T = Mat4.translation(this.pos.x, this.pos.y, this.pos.z);
-  //     const Rx = Mat4.rotationX(this.rot.x);
-  //     const Ry = Mat4.rotationY(this.rot.y);
-  //     const Rz = Mat4.rotationZ(this.rot.z);
-  //     const S = Mat4.scaling(this.scale);
-  //     return Mat4.multiply(
-  //       T,
-  //       Mat4.multiply(Rx, Mat4.multiply(Ry, Mat4.multiply(Rz, S))),
-  //     );
-  //   }
+  getModelMatrix() {
+    const T = Mat4.translation(this.pos.x, this.pos.y, this.pos.z);
+    const Rx = Mat4.rotationX(this.rot.x);
+    const Ry = Mat4.rotationY(this.rot.y);
+    const Rz = Mat4.rotationZ(this.rot.z);
+    const S = Mat4.scaling(this.scale);
+    return Mat4.multiply(
+      S,
+      Mat4.multiply(Rz, Mat4.multiply(Ry, Mat4.multiply(Rx, T))),
+    );
+  }
 }

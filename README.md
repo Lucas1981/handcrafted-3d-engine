@@ -23,7 +23,7 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 
 ### Part II: Wireframe phase
 
-- [ ] Set up an MVP pipeline with which we can get the right 2D coordinates for all our meshes in the scene and draw them as wireframes on the screen. Use an identity matrix as a substitute for our camera transform at first, implying the camera is at 0,0,0 and looking right down at the scene, so with direction 0,0,1 if we choose to go with +z to denote distance from the viewing point.
+- [x] Set up an MVP pipeline with which we can get the right 2D coordinates for all our meshes in the scene and draw them as wireframes on the screen. Use an identity matrix as a substitute for our camera transform at first, implying the camera is at 0,0,0 and looking right down at the scene, so with direction 0,0,1 if we choose to go with +z to denote distance from the viewing point.
 - [ ] Add a camera system with which we can move our viewpoint around. We will go with a UVN system.
 - [ ] Apply mesh culling by seeing which meshes completely fall outside of the viewing frustum.
 - [ ] Apply backface culling to the staged meshes
@@ -34,13 +34,13 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 - [ ] Introduce directional and ambient lighting. Apply the lighting to the flat shaders.
 - [ ] Add polygon culling, skipping drawing all polygons that fall outside the boundaries of the screen after being transformed to 2D coordinates.
 - [ ] Add screen-based clipping to the rasterizer, adjusting the start and end positions based on the start and end points specified by the surviving polygons that have points that fall outside of the screen size.
+- [ ] Add z-buffer support for the rasterizers, incorporating support for 1/z interpolation for the z-buffer.
 
 ### Part IV: Lighting, Gouraud and texturing phase
 
 - [ ] Add point lights to the light sources
 - [ ] Create a new Gouraud shader next to the flat shader that extends this principle and adds interpolation for the light intensity between the points of the triangle.
 - [ ] Add support for spotlights.
-- [ ] Add z-buffer support for the rasterizers, incorporating support for 1/z interpolation for the z-buffer.
 - [ ] Add a Gouraud/texture shader that extends the Gouraud shader by being able to interpolate over the coordinates of a texture to map pixels onto our polygons with added UV coordinates.
 - [ ] Add a near-plane clipper.
 
