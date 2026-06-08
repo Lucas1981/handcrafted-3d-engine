@@ -17,9 +17,9 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 - [x] Scaffold the project: put up a Vite-based system that will dev serve the project with hot reloading, can build the project ready for deployment and have index.html and index.js files that show a simple "Hello, World!"
 - [x] Add an HTML5 Canvas element to the project, set up a loop with requestNextAnimationFrame, and draw a triangle onto the canvas. We can use the moveTo/lineTo setup to draw wireframes at first, not having to deal with rasterization just yet.
 - [x] Set up data structures to represent meshes and polygons in the scene we are going to set up.
-- [ ] Build the vec3 file with functions with which to manipulate 3D vectors, like addition, subtraction, scaling, multiplication, dot product and cross product.
-- [ ] Build the Matrix 4x4 file with the functions we will need to transform vec4 structures. It should have the functions to generate identity, translate, scale and rotate (in all 3 directions) matrices as well as a general transformVec4 function that can apply all these matrices to our vertices in the end. We'll also add a function for the projection itself.
-- [ ] Add generators with which we can create object assets like a cubes, pyramids, cylinders, spheres and toruses.
+- [x] Build the vec3 file with functions with which to manipulate 3D vectors, like addition, subtraction, scaling, multiplication, dot product and cross product.
+- [ ] Build the Matrix 4x4 file with the functions we will need to transform vec4 structures. It should have the functions to generate identity, translate, scale and rotate (in all 3 directions) matrices as well as a general multiply and a transformVec4 function that can apply all these matrices to our vertices in the end. We'll also add a function for the projection itself.
+- [ ] Add generators with which we can create object assets like cubes, pyramids, cylinders, spheres and toruses.
 
 ### Part II: Wireframe phase
 
@@ -30,7 +30,7 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 
 ### Part III: Solid object phase
 
-- [ ] Replace the vector-based drawing with rasterized drawing, turning all meshes into solid objects. We will write triangle shaders to accomplish this with that will write straight into the graphical memory. These will be simple flat shaders.
+- [ ] Replace the vector-based drawing with rasterized drawing, turning all meshes into solid objects. We will write triangle shaders to accomplish this with, that will write straight into the graphical memory. These will be simple flat shaders.
 - [ ] Introduce directional and ambient lighting. Apply the lighting to the flat shaders.
 - [ ] Add polygon culling, skipping drawing all polygons that fall outside the boundaries of the screen after being transformed to 2D coordinates.
 - [ ] Add screen-based clipping to the rasterizer, adjusting the start and end positions based on the start and end points specified by the surviving polygons that have points that fall outside of the screen size.
