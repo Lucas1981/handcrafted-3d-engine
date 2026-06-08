@@ -18,7 +18,7 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 - [x] Add an HTML5 Canvas element to the project, set up a loop with requestNextAnimationFrame, and draw a triangle onto the canvas. We can use the moveTo/lineTo setup to draw wireframes at first, not having to deal with rasterization just yet.
 - [x] Set up data structures to represent meshes and polygons in the scene we are going to set up.
 - [x] Build the vec3 file with functions with which to manipulate 3D vectors, like addition, subtraction, scaling, multiplication, dot product and cross product.
-- [ ] Build the Matrix 4x4 file with the functions we will need to transform vec4 structures. It should have the functions to generate identity, translate, scale and rotate (in all 3 directions) matrices as well as a general multiply and a transformVec4 function that can apply all these matrices to our vertices in the end. We'll also add a function for the projection itself.
+- [x] Build the Matrix 4x4 file with the functions we will need to transform vec4 structures. It should have the functions to generate identity, translate, scale and rotate (in all 3 directions) matrices as well as a general multiply and a transformVec4 function that can apply all these matrices to our vertices in the end. We'll also add a function for the projection itself.
 - [ ] Add generators with which we can create object assets like cubes, pyramids, cylinders, spheres and toruses.
 
 ### Part II: Wireframe phase
