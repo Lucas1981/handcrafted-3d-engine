@@ -1,0 +1,62 @@
+{
+  "vertices": [
+    [-1, -1, -1],
+    [1, -1, -1],
+    [1, 1, -1],
+    [-1, 1, -1],
+    [-1, -1, 1],
+    [1, -1, 1],
+    [1, 1, 1],
+    [-1, 1, 1]
+  ],
+  "polygons": [
+    {
+      "vertexIndices": [0, 1, 2],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [0, 2, 3],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [4, 5, 6],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [4, 6, 7],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [0, 3, 7],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [0, 7, 4],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [0, 1, 5],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [0, 5, 4],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [1, 2, 6],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [1, 6, 5],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [3, 2, 6],
+      "color": "#ff0000"
+    },
+    {
+      "vertexIndices": [3, 6, 7],
+      "color": "#ff0000"
+    }
+  ]
+}
