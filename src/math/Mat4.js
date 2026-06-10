@@ -1,3 +1,5 @@
+import { Vec3 } from "./Vec3";
+
 export class Mat4 {
   constructor() {
     throw new Error(
@@ -51,6 +53,42 @@ export class Mat4 {
     }
 
     return result;
+  }
+
+  // See LaMothe, p. 665
+  static camera(target, pos) {
+    const n = Vec3.sub(target, pos);
+    let v = { x: 0, y: 1, z: 0 };
+    const u = Vec3.cross(v, n);
+    v = Vec3.cross(n, u);
+    const nn = Vec3.normal(n);
+    const nu = Vec3.normal(u);
+    const nv = Vec3.normal(v);
+
+    const camPosDotU = Vec3.dot(pos, nu);
+    const camPosDotV = Vec3.dot(pos, nv);
+    const camPosDotN = Vec3.dot(pos, nn);
+
+    return [
+      // Rotation
+      nu.x,
+      nv.x,
+      nn.x,
+      0,
+      nu.y,
+      nv.y,
+      nn.y,
+      0,
+      nu.z,
+      nv.z,
+      nn.z,
+      0,
+      // Translation
+      -camPosDotU,
+      -camPosDotV,
+      -camPosDotN,
+      1,
+    ];
   }
 
   static transformVec4(v, m) {

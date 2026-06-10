@@ -12,6 +12,7 @@ import { Mat4 } from "./math/Mat4.js";
 import { degToRad } from "./math/trig.js";
 import cubeJson from "./assets/cube.json";
 import { Mesh3D } from "./geometry/Mesh3D.js";
+import { Camera } from "./geometry/Camera.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -20,6 +21,8 @@ const projectionMatrix = Mat4.perspective(
   Math.tan(halfFOVAngleInRadians),
   ASPECT_RATIO,
 );
+const camera = new Camera();
+camera.setPos({ x: 0, y: 0, z: 0 });
 const cube = new Mesh3D(cubeJson);
 cube.setPosition({ x: 0, y: 0, z: 6 });
 const meshes = [cube];
@@ -77,7 +80,7 @@ const main = () => {
 
   clearScreen();
 
-  const view = Mat4.identity(); // Use identity matrix as a stub for now
+  const view = camera.getCameraTransformMatrix();
 
   for (const mesh of meshes) {
     const model = mesh.getModelMatrix();
