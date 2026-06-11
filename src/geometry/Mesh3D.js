@@ -1,5 +1,6 @@
 import { Polygon } from "./Polygon";
 import { Mat4 } from "../math/Mat4";
+import { Vec3 } from "../math/Vec3";
 
 export class Mesh3D {
   constructor(data) {
@@ -8,6 +9,12 @@ export class Mesh3D {
     this.scale = 1;
     this.vlist = JSON.parse(JSON.stringify(data.vertices));
     this.plist = data.polygons.map((polygon) => new Polygon(polygon));
+    this.maxRadius = this.vlist
+      .map(([x, y, z]) => ({ x, y, z }))
+      .reduce((acc, curr) => {
+        const currLen = Math.abs(Vec3.len(curr));
+        return currLen > acc ? currLen : acc;
+      }, 0);
   }
 
   getPosition() {
@@ -32,6 +39,10 @@ export class Mesh3D {
 
   setScale(scale) {
     this.scale = scale;
+  }
+
+  getMaxRadius() {
+    return this.maxRadius;
   }
 
   getModelMatrix() {
