@@ -1,3 +1,4 @@
+import { degToRad } from "./trig";
 import { Vec3 } from "./Vec3";
 
 export class Mat4 {
@@ -15,21 +16,21 @@ export class Mat4 {
     return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1];
   }
 
-  static rotationX(angle) {
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
+  static rotationX(angleInDegrees) {
+    const cos = Math.cos(angleInDegrees * degToRad);
+    const sin = Math.sin(angleInDegrees * degToRad);
     return [1, 0, 0, 0, 0, cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1];
   }
 
-  static rotationY(angle) {
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
+  static rotationY(angleInDegrees) {
+    const cos = Math.cos(angleInDegrees * degToRad);
+    const sin = Math.sin(angleInDegrees * degToRad);
     return [cos, 0, -sin, 0, 0, 1, 0, 0, sin, 0, cos, 0, 0, 0, 0, 1];
   }
 
-  static rotationZ(angle) {
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
+  static rotationZ(angleInDegrees) {
+    const cos = Math.cos(angleInDegrees * degToRad);
+    const sin = Math.sin(angleInDegrees * degToRad);
     return [cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
   }
 

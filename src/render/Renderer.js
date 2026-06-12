@@ -4,9 +4,11 @@ import {
   HALF_SCREEN_WIDTH,
   HALF_SCREEN_HEIGHT,
   W_EPS,
+  APPLY_BACKFACE_CULLING,
 } from "../constants";
 import { Mat4 } from "../math/Mat4";
 import { isMeshVisible } from "./mesh-culling";
+import { applyBackfaceCulling } from "./backface-culling";
 
 export class Renderer {
   constructor(ctx, projectionMatrix) {
@@ -29,12 +31,22 @@ export class Renderer {
       if (!isMeshVisible(centerCam, mesh.getMaxRadius())) {
         continue;
       }
+      const tplist = this.#getBackfaceCulledPolygons(mv, mesh);
       const mvp = Mat4.multiply(mv, this.projectionMatrix);
       const tvlist = this.#transformVecList(mvp, mesh);
       const projected = this.#getProjectedCoordinates(tvlist);
       const screen = this.#getScreenCoordinates(projected);
-      this.#drawPolygons(screen, mesh);
+      this.#drawPolygons(screen, tplist);
     }
+  }
+
+  #getBackfaceCulledPolygons(mv, mesh) {
+    let tplist = mesh.plist;
+    if (APPLY_BACKFACE_CULLING) {
+      const tvlist = this.#transformVecList(mv, mesh);
+      tplist = applyBackfaceCulling(mesh.plist, tvlist);
+    }
+    return tplist;
   }
 
   #transformVecList(transformer, mesh) {
@@ -71,8 +83,8 @@ export class Renderer {
     this.ctx.fill();
   }
 
-  #drawPolygons(screen, mesh) {
-    for (const polygon of mesh.plist) {
+  #drawPolygons(screen, polygons) {
+    for (const polygon of polygons) {
       this.ctx.beginPath();
       const p1 = screen[polygon.vertexIndices[0]];
       const p2 = screen[polygon.vertexIndices[1]];

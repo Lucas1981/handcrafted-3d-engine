@@ -19,11 +19,11 @@
       "color": "#ff0000"
     },
     {
-      "vertexIndices": [4, 5, 6],
+      "vertexIndices": [4, 6, 5],
       "color": "#ff0000"
     },
     {
-      "vertexIndices": [4, 6, 7],
+      "vertexIndices": [4, 7, 6],
       "color": "#ff0000"
     },
     {
@@ -35,19 +35,19 @@
       "color": "#ff0000"
     },
     {
-      "vertexIndices": [0, 1, 5],
+      "vertexIndices": [0, 5, 1],
       "color": "#ff0000"
     },
     {
-      "vertexIndices": [0, 5, 4],
+      "vertexIndices": [0, 4, 5],
       "color": "#ff0000"
     },
     {
-      "vertexIndices": [1, 2, 6],
+      "vertexIndices": [1, 6, 2],
       "color": "#ff0000"
     },
     {
-      "vertexIndices": [1, 6, 5],
+      "vertexIndices": [1, 5, 6],
       "color": "#ff0000"
     },
     {

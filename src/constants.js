@@ -13,3 +13,4 @@ export const VIEW_DIST = (0.5 * VIEWPLANE_WIDTH) / TAN_FOV_DIV2; // essentially 
 export const W_EPS = 1e-8;
 export const NEAR = 0.1;
 export const FAR = 1000;
+export const APPLY_BACKFACE_CULLING = true;

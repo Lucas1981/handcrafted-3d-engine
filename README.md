@@ -26,7 +26,7 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 - [x] Set up an MVP pipeline with which we can get the right 2D coordinates for all our meshes in the scene and draw them as wireframes on the screen. Use an identity matrix as a substitute for our camera transform at first, implying the camera is at 0,0,0 and looking right down at the scene, so with direction 0,0,1 if we choose to go with +z to denote distance from the viewing point.
 - [x] Add a camera system with which we can move and rotate our viewpoint around. We will go with a UVN system.
 - [x] Apply mesh culling by seeing which meshes completely fall outside of the viewing frustum.
-- [ ] Apply backface culling to the staged meshes
+- [x] Apply backface culling to the staged meshes
 
 ### Part III: Solid object phase
 
