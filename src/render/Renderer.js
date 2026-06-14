@@ -9,10 +9,12 @@ import {
 import { Mat4 } from "../math/Mat4";
 import { isMeshVisible } from "./mesh-culling";
 import { applyBackfaceCulling } from "./backface-culling";
+import { drawTriangleFlatShade } from "./shaders/flat-shader";
 
 export class Renderer {
-  constructor(ctx, projectionMatrix) {
-    this.ctx = ctx;
+  constructor(canvas, projectionMatrix) {
+    this.ctx = canvas.getContext("2d");
+    this.imageData = this.ctx.getImageData(0, 0, WIDTH, HEIGHT);
     this.projectionMatrix = projectionMatrix;
   }
 
@@ -20,6 +22,7 @@ export class Renderer {
     this.#clearScreen();
     const view = camera.getCameraTransformMatrix();
     this.#pipeline(view, meshes);
+    this.ctx.putImageData(this.imageData, 0, 0);
   }
 
   #pipeline(view, meshes) {
@@ -36,7 +39,7 @@ export class Renderer {
       const tvlist = this.#transformVecList(mvp, mesh);
       const projected = this.#getProjectedCoordinates(tvlist);
       const screen = this.#getScreenCoordinates(projected);
-      this.#drawPolygons(screen, tplist);
+      this.#drawFlatShaded(screen, tplist);
     }
   }
 
@@ -76,14 +79,43 @@ export class Renderer {
     }));
   }
 
+  #getSafeW(w) {
+    if (w === 0) {
+      return W_EPS;
+    }
+
+    if (Math.abs(w) < W_EPS) {
+      return w < 0 ? -W_EPS : W_EPS;
+    }
+
+    return w;
+  }
+
   #clearScreen() {
+    this.#clearScreenWithImageData();
+  }
+
+  #clearScreenWithImageData() {
+    for (let i = 0; i < WIDTH * HEIGHT * 4; i += 4) {
+      this.imageData.data[i] = 0;
+      this.imageData.data[i + 1] = 0;
+      this.imageData.data[i + 2] = 0;
+      this.imageData.data[i + 3] = 255;
+    }
+  }
+
+  #clearScreenWithContextCommands() {
     this.ctx.beginPath();
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, WIDTH, HEIGHT);
     this.ctx.fill();
   }
 
-  #drawPolygons(screen, polygons) {
+  // With the current solid modeling setup, this method wouldn't work anymore.
+  // you'd have to remove the this.ctx.putImageData(this.imageData, 0, 0) statement
+  // in the render method. You'd also have to switch to #clearScreenWithContextCommands
+  // in the #clearScreen method.
+  #drawWireframe(screen, polygons) {
     for (const polygon of polygons) {
       this.ctx.beginPath();
       const p1 = screen[polygon.vertexIndices[0]];
@@ -98,15 +130,9 @@ export class Renderer {
     }
   }
 
-  #getSafeW(w) {
-    if (w === 0) {
-      return W_EPS;
+  #drawFlatShaded(screen, polygons) {
+    for (const polygon of polygons) {
+      drawTriangleFlatShade(polygon, screen, this.imageData);
     }
-
-    if (Math.abs(w) < W_EPS) {
-      return w < 0 ? -W_EPS : W_EPS;
-    }
-
-    return w;
   }
 }
