@@ -14,3 +14,8 @@ export const W_EPS = 1e-8;
 export const NEAR = 0.1;
 export const FAR = 1000;
 export const APPLY_BACKFACE_CULLING = true;
+export const LIGHT_TYPES = {
+  DIRECTIONAL: "directional",
+  POINT: "point",
+  SPOT: "spot",
+};

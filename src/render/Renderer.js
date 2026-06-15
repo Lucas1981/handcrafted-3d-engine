@@ -10,6 +10,10 @@ import { Mat4 } from "../math/Mat4";
 import { isMeshVisible } from "./mesh-culling";
 import { applyBackfaceCulling } from "./backface-culling";
 import { drawTriangleFlatShade } from "./shaders/flat-shader";
+import {
+  calculateLighting,
+  calculateLitColor,
+} from "../light/calculate-lighting";
 
 export class Renderer {
   constructor(canvas, projectionMatrix) {
@@ -18,14 +22,14 @@ export class Renderer {
     this.projectionMatrix = projectionMatrix;
   }
 
-  render(meshes, camera) {
+  render(meshes, camera, lights) {
     this.#clearScreen();
     const view = camera.getCameraTransformMatrix();
-    this.#pipeline(view, meshes);
+    this.#pipeline(view, meshes, lights);
     this.ctx.putImageData(this.imageData, 0, 0);
   }
 
-  #pipeline(view, meshes) {
+  #pipeline(view, meshes, lights) {
     for (const mesh of meshes) {
       const model = mesh.getModelMatrix();
       const mv = Mat4.multiply(model, view);
@@ -34,22 +38,34 @@ export class Renderer {
       if (!isMeshVisible(centerCam, mesh.getMaxRadius())) {
         continue;
       }
-      const tplist = this.#getBackfaceCulledPolygons(mv, mesh);
+      const { tplist, surfaceNormalList } = this.#getBackfaceCulledPolygons(
+        mv,
+        mesh,
+      );
+      const lighting = calculateLighting(
+        mesh,
+        tplist,
+        lights,
+        surfaceNormalList,
+      );
       const mvp = Mat4.multiply(mv, this.projectionMatrix);
       const tvlist = this.#transformVecList(mvp, mesh);
       const projected = this.#getProjectedCoordinates(tvlist);
       const screen = this.#getScreenCoordinates(projected);
-      this.#drawFlatShaded(screen, tplist);
+      this.#drawFlatShaded(screen, tplist, lighting);
     }
   }
 
   #getBackfaceCulledPolygons(mv, mesh) {
-    let tplist = mesh.plist;
-    if (APPLY_BACKFACE_CULLING) {
-      const tvlist = this.#transformVecList(mv, mesh);
-      tplist = applyBackfaceCulling(mesh.plist, tvlist);
-    }
-    return tplist;
+    const tvlist = this.#transformVecList(mv, mesh);
+    const { tplist, surfaceNormalList } = applyBackfaceCulling(
+      mesh.plist,
+      tvlist,
+    );
+    return {
+      tplist: APPLY_BACKFACE_CULLING ? tplist : mesh.plist,
+      surfaceNormalList,
+    };
   }
 
   #transformVecList(transformer, mesh) {
@@ -130,9 +146,11 @@ export class Renderer {
     }
   }
 
-  #drawFlatShaded(screen, polygons) {
+  #drawFlatShaded(screen, polygons, lighting) {
     for (const polygon of polygons) {
-      drawTriangleFlatShade(polygon, screen, this.imageData);
+      const { intensity } = lighting.find(({ id }) => id === polygon.id);
+      const color = calculateLitColor(polygon.color, intensity);
+      drawTriangleFlatShade(polygon, color, screen, this.imageData);
     }
   }
 }

@@ -1,5 +1,6 @@
 export class Polygon {
-  constructor(data) {
+  constructor(data, index) {
+    this.id = index;
     this.color = data.color;
     this.vertexIndices = [...data.vertexIndices];
     this.texture = data?.texture || null;

@@ -8,7 +8,7 @@ export class Mesh3D {
     this.rot = { x: 0, y: 0, z: 0 };
     this.scale = 1;
     this.vlist = JSON.parse(JSON.stringify(data.vertices));
-    this.plist = data.polygons.map((polygon) => new Polygon(polygon));
+    this.plist = data.polygons.map((polygon, idx) => new Polygon(polygon, idx));
     this.maxRadius = this.vlist
       .map(([x, y, z]) => ({ x, y, z }))
       .reduce((acc, curr) => {

@@ -1,4 +1,4 @@
-import { plotPixel, hexToDec } from "./utils";
+import { plotPixel } from "./utils";
 
 const fillTriangleFlatBottom = (triangle, color, imageData) => {
   const dxl =
@@ -50,13 +50,11 @@ const fillTriangleFlatTop = (triangle, color, imageData) => {
   }
 };
 
-export const drawTriangleFlatShade = (polygon, screen, imageData) => {
+export const drawTriangleFlatShade = (polygon, color, screen, imageData) => {
   const triangle = polygon.vertexIndices.map((idx) => {
     const { x, y } = screen[idx];
     return [parseInt(x), parseInt(y)];
   });
-
-  const color = hexToDec(polygon.color);
 
   triangle.sort((a, b) => {
     return a[1] - b[1];
