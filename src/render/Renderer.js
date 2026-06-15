@@ -51,9 +51,26 @@ export class Renderer {
       const mvp = Mat4.multiply(mv, this.projectionMatrix);
       const tvlist = this.#transformVecList(mvp, mesh);
       const projected = this.#getProjectedCoordinates(tvlist);
+      const finalPolygons = this.#cullPolygons(projected, tplist);
       const screen = this.#getScreenCoordinates(projected);
-      this.#drawFlatShaded(screen, tplist, lighting);
+      this.#drawFlatShaded(screen, finalPolygons, lighting);
     }
+  }
+
+  #cullPolygons(screen, tplist) {
+    return tplist.filter((polygon) => {
+      const verts = polygon.vertexIndices.map((idx) => screen[idx]);
+      if (
+        verts.every(({ x }) => x < -1) ||
+        verts.every(({ y }) => y < -1) ||
+        verts.every(({ x }) => x > 1) ||
+        verts.every(({ y }) => y > 1)
+      ) {
+        return false;
+      }
+
+      return true;
+    });
   }
 
   #getBackfaceCulledPolygons(mv, mesh) {
