@@ -107,8 +107,8 @@ export class Renderer {
 
   #getScreenCoordinates(projected) {
     return projected.map((p) => ({
-      x: (p.x + 1) * HALF_SCREEN_WIDTH,
-      y: (-p.y + 1) * HALF_SCREEN_HEIGHT,
+      x: Math.floor((p.x + 1) * HALF_SCREEN_WIDTH),
+      y: Math.floor((-p.y + 1) * HALF_SCREEN_HEIGHT),
     }));
   }
 

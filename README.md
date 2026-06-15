@@ -33,7 +33,7 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 - [x] Replace the vector-based drawing with rasterized drawing, turning all meshes into solid objects. We will write triangle shaders to accomplish this with, that will write straight into the graphical memory. These will be simple flat shaders.
 - [x] Introduce directional and ambient lighting. Apply the lighting to the flat shaders.
 - [x] Add polygon culling, skipping drawing all polygons that fall outside the boundaries of the projection space after being transformed to 2D coordinates.
-- [ ] Add screen-based clipping to the rasterizer, adjusting the start and end positions based on the start and end points specified by the surviving polygons that have points that fall outside of the screen size.
+- [x] Add screen-based clipping to the rasterizer, adjusting the start and end positions based on the start and end points specified by the surviving polygons that have points that fall outside of the screen size.
 - [ ] Add z-buffer support for the rasterizers, incorporating support for 1/z interpolation for the z-buffer.
 
 ### Part IV: Lighting, Gouraud and texturing phase
