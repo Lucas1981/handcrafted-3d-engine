@@ -19,9 +19,11 @@ const projectionMatrix = Mat4.perspective(
 const renderer = new Renderer(canvas, projectionMatrix);
 const camera = new Camera();
 camera.setPos({ x: 0, y: 0, z: 0 });
+const topMesh = new Mesh3D(cubeJson);
+topMesh.setPosition({ x: 0, y: 0, z: 5 });
 const mesh = new Mesh3D(cubeJson);
 mesh.setPosition({ x: 0, y: 0, z: 5 });
-const meshes = [mesh];
+const meshes = [mesh, topMesh];
 const lights = [new DirectionalLight(1, [255, 255, 255], { x: 0, y: 0, z: 1 })];
 
 canvas.width = WIDTH;

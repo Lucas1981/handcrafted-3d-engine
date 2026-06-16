@@ -16,3 +16,9 @@ export const hexToDec = (color) => {
 
   return [r, g, b, 255];
 };
+
+export const getNewPointValue = (triangle, index) =>
+  triangle[0][index] +
+  ((triangle[2][index] - triangle[0][index]) *
+    (triangle[1][1] - triangle[0][1])) /
+    (triangle[2][1] - triangle[0][1]);

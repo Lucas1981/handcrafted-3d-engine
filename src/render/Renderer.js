@@ -20,10 +20,12 @@ export class Renderer {
     this.ctx = canvas.getContext("2d");
     this.imageData = this.ctx.getImageData(0, 0, WIDTH, HEIGHT);
     this.projectionMatrix = projectionMatrix;
+    this.zBuffer = new Array(WIDTH * HEIGHT).fill(0);
   }
 
   render(meshes, camera, lights) {
     this.#clearScreen();
+    this.zBuffer.fill(0);
     const view = camera.getCameraTransformMatrix();
     this.#pipeline(view, meshes, lights);
     this.ctx.putImageData(this.imageData, 0, 0);
@@ -52,7 +54,7 @@ export class Renderer {
       const tvlist = this.#transformVecList(mvp, mesh);
       const projected = this.#getProjectedCoordinates(tvlist);
       const finalPolygons = this.#cullPolygons(projected, tplist);
-      const screen = this.#getScreenCoordinates(projected);
+      const screen = this.#getScreenCoordinates(projected, tvlist);
       this.#drawFlatShaded(screen, finalPolygons, lighting);
     }
   }
@@ -105,10 +107,11 @@ export class Renderer {
     });
   }
 
-  #getScreenCoordinates(projected) {
-    return projected.map((p) => ({
+  #getScreenCoordinates(projected, tvlist) {
+    return projected.map((p, index) => ({
       x: Math.floor((p.x + 1) * HALF_SCREEN_WIDTH),
       y: Math.floor((-p.y + 1) * HALF_SCREEN_HEIGHT),
+      depth: 1 / tvlist[index][2],
     }));
   }
 
@@ -167,7 +170,14 @@ export class Renderer {
     for (const polygon of polygons) {
       const { intensity } = lighting.find(({ id }) => id === polygon.id);
       const color = calculateLitColor(polygon.color, intensity);
-      drawTriangleFlatShade(polygon, color, screen, this.imageData);
+
+      drawTriangleFlatShade(
+        polygon,
+        color,
+        screen,
+        this.imageData,
+        this.zBuffer,
+      );
     }
   }
 }
