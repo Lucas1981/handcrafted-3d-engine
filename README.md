@@ -38,7 +38,7 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 
 ### Part IV: Gouraud and texturing phase
 
-- [ ] Add point lights to the light sources
+- [x] Add point lights to the light sources
 - [ ] Create a new Gouraud shader next to the flat shader that extends this principle and adds interpolation for the light intensity between the points of the triangle.
 - [ ] Add support for spotlights.
 - [ ] Add a Gouraud/texture shader that extends the Gouraud shader by being able to interpolate over the coordinates of a texture to map pixels onto our polygons with added UV coordinates.
@@ -50,7 +50,3 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 - [ ] Apply perspective-correct interpolation to lighting.
 - [ ] Switch from Gouraud to Phong shading, interpolating the surface normals rather than the light intensity, calculating the light intensity per-pixel. Would also mean the surface normals would have to be calculated taking into account their adjacent polygon neighbors.
 - [ ] Try a baked-in scene where the light values are already pre-calculated using a light map.
-
-## Reflection
-
-So after introducing the z-buffer into the shaders, it dawned on me that shaders aren't really complicated, just very complex. With every new interpolant you introduce, you have to jump through many hoops to get them right. That gets many as soon as you start introducing r, g, b, u and v next to the z values. The functions explode the more interpolants you add. I am actually wondering now if there is maybe not a way to bundle all these interpolant operations with an array, since they are all doing basically the same thing, just for other values. If it could be bundled up, it would save a lot of trouble. If the nature of the shaders is such that you just have to do it one by one, then that's just the way it is and the functions just can get very very long and hard to follow. I've added a file `basic-shader-example.js` with the simplest shader setup there is - without even any clamping and also without an interpolating. It can be a good boiler plate for any other shaders that you'd want to add later on down.

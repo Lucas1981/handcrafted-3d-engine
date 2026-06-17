@@ -22,6 +22,10 @@ object.vertices = [
 for (let i = 0; i < 12; i++) {
   object.polygons[i] = { vertexIndices: [] };
   object.polygons[i].color = color;
+  object.polygons[i].materials = {
+    ambient: color,
+    diffuse: color,
+  };
 }
 
 object.polygons[0].vertexIndices = [0, 1, 2];

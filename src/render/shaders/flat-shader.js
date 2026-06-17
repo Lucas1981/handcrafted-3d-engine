@@ -1,25 +1,13 @@
-import { plotPixel, getNewPointValue } from "./utils";
+import { plotPixel, getNewPointValue, orderLeftToRight } from "./utils";
 import { WIDTH, HEIGHT } from "../../constants";
 
 const fillTriangleFlatBottom = (triangle, color, imageData, zBuffer) => {
   // 1. Set up basic conditions
 
-  if (triangle[2][0] < triangle[1][0]) {
-    const tmp = triangle[2];
-    triangle[2] = triangle[1];
-    triangle[1] = tmp;
-  }
-
-  let dxl =
+  const dxl =
     (triangle[0][0] - triangle[2][0]) / (triangle[0][1] - triangle[2][1]);
-  let dxr =
+  const dxr =
     (triangle[0][0] - triangle[1][0]) / (triangle[0][1] - triangle[1][1]);
-
-  if (dxl > dxr) {
-    const tmp = dxl;
-    dxl = dxr;
-    dxr = tmp;
-  }
 
   let clx = triangle[0][0];
   let crx = triangle[0][0];
@@ -90,18 +78,10 @@ const fillTriangleFlatBottom = (triangle, color, imageData, zBuffer) => {
 const fillTriangleFlatTop = (triangle, color, imageData, zBuffer) => {
   // 1. Set up basic conditions
 
-  if (triangle[0][0] > triangle[1][0]) {
-    const tmp = triangle[0];
-    triangle[0] = triangle[1];
-    triangle[1] = tmp;
-  }
-
   const dxl =
     (triangle[2][0] - triangle[0][0]) / (triangle[2][1] - triangle[0][1]);
   const dxr =
     (triangle[2][0] - triangle[1][0]) / (triangle[2][1] - triangle[1][1]);
-
-  // NOTE: we don't swap dxl and dxr here, like we do in fillTriangleFlatBottom
 
   let clx = triangle[2][0];
   let crx = triangle[2][0];
@@ -185,27 +165,23 @@ export const drawTriangleFlatShade = (
     return a[1] - b[1];
   });
 
+  const [top, mid, bottom] = triangle;
+
   if (triangle[1][1] == triangle[2][1]) {
-    fillTriangleFlatBottom(triangle, color, imageData, zBuffer);
+    const [left, right] = orderLeftToRight(mid, bottom);
+    fillTriangleFlatBottom([top, left, right], color, imageData, zBuffer);
   } else if (triangle[0][1] == triangle[1][1]) {
-    fillTriangleFlatTop(triangle, color, imageData, zBuffer);
+    const [left, right] = orderLeftToRight(mid, top);
+    fillTriangleFlatTop([left, right, bottom], color, imageData, zBuffer);
   } else {
     const v1 = [
       getNewPointValue(triangle, 0),
       triangle[1][1],
       getNewPointValue(triangle, 2),
     ];
-    fillTriangleFlatBottom(
-      [triangle[0], triangle[1], v1],
-      color,
-      imageData,
-      zBuffer,
-    );
-    fillTriangleFlatTop(
-      [triangle[1], v1, triangle[2]],
-      color,
-      imageData,
-      zBuffer,
-    );
+
+    const [left, right] = orderLeftToRight(mid, v1);
+    fillTriangleFlatBottom([top, left, right], color, imageData, zBuffer);
+    fillTriangleFlatTop([left, right, bottom], color, imageData, zBuffer);
   }
 };

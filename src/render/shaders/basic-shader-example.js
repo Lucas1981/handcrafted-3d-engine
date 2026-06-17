@@ -2,8 +2,7 @@
  * So this file is not meant to be used, it is here to illustrate the most basic shader. So that means
  * a flat shader where we don't do clamping or z-buffering. It's meant to illustrate the easiest setup for
  * a shader to then elaborate on. It's really quite simple. It gets complex when you start interpolating
- * values mainly, like depth, light - unpacked into r, g and b - and u, v. Those all have to be interpolated
- * correctly and it takes up a lot of space and it gets meticulous.
+ * values mainly.
  */
 import { plotPixel } from "./utils";
 import { WIDTH, HEIGHT } from "../../constants";

@@ -22,3 +22,25 @@ export const getNewPointValue = (triangle, index) =>
   ((triangle[2][index] - triangle[0][index]) *
     (triangle[1][1] - triangle[0][1])) /
     (triangle[2][1] - triangle[0][1]);
+
+export const addScaledInPlace = (src, dest, scale = 1) => {
+  for (let i = 0; i < src.length; i++) {
+    dest[i] = dest[i] + src[i] * scale;
+  }
+};
+
+export const copyInPlace = (src, dest) => {
+  for (let i = 0; i < src.length; i++) {
+    dest[i] = src[i];
+  }
+};
+
+export const setDnx = (out, left, right, denom) => {
+  for (let i = 0; i < out.length; i++) {
+    out[i] = (right[i] - left[i]) / denom;
+  }
+};
+
+export const orderLeftToRight = (a, b) => {
+  return a[0] < b[0] ? [a, b] : [b, a];
+};

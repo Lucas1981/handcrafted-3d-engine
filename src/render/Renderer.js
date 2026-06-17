@@ -5,30 +5,29 @@ import {
   HALF_SCREEN_HEIGHT,
   W_EPS,
   APPLY_BACKFACE_CULLING,
+  DRAW_LIGHT_SOURCES,
 } from "../constants";
 import { Mat4 } from "../math/Mat4";
 import { isMeshVisible } from "./mesh-culling";
 import { applyBackfaceCulling } from "./backface-culling";
-import { drawTriangleFlatShade } from "./shaders/flat-shader";
-import {
-  calculateLighting,
-  calculateLitColor,
-} from "../light/calculate-lighting";
+import { calculateLighting } from "../light/calculate-lighting";
+import { Graphics } from "./Graphics";
 
 export class Renderer {
   constructor(canvas, projectionMatrix) {
-    this.ctx = canvas.getContext("2d");
-    this.imageData = this.ctx.getImageData(0, 0, WIDTH, HEIGHT);
+    this.graphics = new Graphics(canvas);
     this.projectionMatrix = projectionMatrix;
-    this.zBuffer = new Array(WIDTH * HEIGHT).fill(0);
   }
 
   render(meshes, camera, lights) {
-    this.#clearScreen();
-    this.zBuffer.fill(0);
     const view = camera.getCameraTransformMatrix();
+    this.#clearScreen();
+    this.graphics.resetZBuffer();
     this.#pipeline(view, meshes, lights);
-    this.ctx.putImageData(this.imageData, 0, 0);
+    this.graphics.putImageData();
+    if (DRAW_LIGHT_SOURCES) {
+      this.#drawLightSources(view, lights);
+    }
   }
 
   #pipeline(view, meshes, lights) {
@@ -40,22 +39,28 @@ export class Renderer {
       if (!isMeshVisible(centerCam, mesh.getMaxRadius())) {
         continue;
       }
-      const { tplist, surfaceNormalList } = this.#getBackfaceCulledPolygons(
-        mv,
-        mesh,
-      );
-      const lighting = calculateLighting(
-        mesh,
-        tplist,
-        lights,
-        surfaceNormalList,
-      );
+      const tplist = this.#cullBackfaces(mv, mesh);
+      const world = this.#transformVecList(model, mesh);
+      const lighting = calculateLighting(world, tplist, lights);
       const mvp = Mat4.multiply(mv, this.projectionMatrix);
       const tvlist = this.#transformVecList(mvp, mesh);
       const projected = this.#getProjectedCoordinates(tvlist);
       const finalPolygons = this.#cullPolygons(projected, tplist);
       const screen = this.#getScreenCoordinates(projected, tvlist);
-      this.#drawFlatShaded(screen, finalPolygons, lighting);
+      this.graphics.drawGouraudShaded(screen, finalPolygons, lighting);
+    }
+  }
+
+  #drawLightSources(view, lights) {
+    for (const light of lights) {
+      const pos = light.getPosition();
+      const model = Mat4.translation(pos.x, pos.y, pos.z);
+      const mv = Mat4.multiply(model, view);
+      const mvp = Mat4.multiply(mv, this.projectionMatrix);
+      const tvec = Mat4.transformVec4([0, 0, 0, 1], mvp);
+      const projected = this.#getProjectedCoordinates([tvec]);
+      const screen = this.#getScreenCoordinates(projected, [tvec]);
+      this.graphics.drawLightSource(screen[0]);
     }
   }
 
@@ -75,16 +80,13 @@ export class Renderer {
     });
   }
 
-  #getBackfaceCulledPolygons(mv, mesh) {
-    const tvlist = this.#transformVecList(mv, mesh);
-    const { tplist, surfaceNormalList } = applyBackfaceCulling(
-      mesh.plist,
-      tvlist,
-    );
-    return {
-      tplist: APPLY_BACKFACE_CULLING ? tplist : mesh.plist,
-      surfaceNormalList,
-    };
+  #cullBackfaces(mv, mesh) {
+    if (APPLY_BACKFACE_CULLING) {
+      const tvlist = this.#transformVecList(mv, mesh);
+      const tplist = applyBackfaceCulling(mesh.plist, tvlist);
+      return tplist;
+    }
+    return mesh.plist;
   }
 
   #transformVecList(transformer, mesh) {
@@ -111,7 +113,8 @@ export class Renderer {
     return projected.map((p, index) => ({
       x: Math.floor((p.x + 1) * HALF_SCREEN_WIDTH),
       y: Math.floor((-p.y + 1) * HALF_SCREEN_HEIGHT),
-      depth: 1 / tvlist[index][2],
+      // NOTE: Once we introduce near-plane clipping, we will have to recompute depth.
+      depth: 1 / (tvlist[index][2] || W_EPS),
     }));
   }
 
@@ -128,56 +131,6 @@ export class Renderer {
   }
 
   #clearScreen() {
-    this.#clearScreenWithImageData();
-  }
-
-  #clearScreenWithImageData() {
-    for (let i = 0; i < WIDTH * HEIGHT * 4; i += 4) {
-      this.imageData.data[i] = 0;
-      this.imageData.data[i + 1] = 0;
-      this.imageData.data[i + 2] = 0;
-      this.imageData.data[i + 3] = 255;
-    }
-  }
-
-  #clearScreenWithContextCommands() {
-    this.ctx.beginPath();
-    this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, WIDTH, HEIGHT);
-    this.ctx.fill();
-  }
-
-  // With the current solid modeling setup, this method wouldn't work anymore.
-  // you'd have to remove the this.ctx.putImageData(this.imageData, 0, 0) statement
-  // in the render method. You'd also have to switch to #clearScreenWithContextCommands
-  // in the #clearScreen method.
-  #drawWireframe(screen, polygons) {
-    for (const polygon of polygons) {
-      this.ctx.beginPath();
-      const p1 = screen[polygon.vertexIndices[0]];
-      const p2 = screen[polygon.vertexIndices[1]];
-      const p3 = screen[polygon.vertexIndices[2]];
-      this.ctx.moveTo(p1.x, p1.y);
-      this.ctx.lineTo(p2.x, p2.y);
-      this.ctx.lineTo(p3.x, p3.y);
-      this.ctx.lineTo(p1.x, p1.y);
-      this.ctx.strokeStyle = polygon.color;
-      this.ctx.stroke();
-    }
-  }
-
-  #drawFlatShaded(screen, polygons, lighting) {
-    for (const polygon of polygons) {
-      const { intensity } = lighting.find(({ id }) => id === polygon.id);
-      const color = calculateLitColor(polygon.color, intensity);
-
-      drawTriangleFlatShade(
-        polygon,
-        color,
-        screen,
-        this.imageData,
-        this.zBuffer,
-      );
-    }
+    this.graphics.clearScreenWithImageData();
   }
 }

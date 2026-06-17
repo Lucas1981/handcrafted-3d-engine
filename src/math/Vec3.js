@@ -1,3 +1,8 @@
+export const vertArrToObj = (arr) => {
+  const [x, y, z] = arr;
+  return { x, y, z };
+};
+
 export class Vec3 {
   constructor() {
     throw new Error(
@@ -70,6 +75,13 @@ export class Vec3 {
     const l1 = Vec3.len(v1);
     const l2 = Vec3.len(v2);
     return Math.acos(dp / (l1 * l2));
+  }
+
+  static surfaceNormal(v0, v1, v2) {
+    const e1 = Vec3.sub(v1, v0);
+    const e2 = Vec3.sub(v2, v0);
+    const n = Vec3.cross(e1, e2);
+    return Vec3.normal(n);
   }
 
   // This method shouldn't be used, but it illustrates how the cross product between two

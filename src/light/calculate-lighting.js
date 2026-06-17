@@ -1,60 +1,74 @@
 import { LIGHT_TYPES } from "../constants";
-import { Vec3 } from "../math/Vec3";
-import { hexToDec } from "../render/shaders/utils";
+import { Vec3, vertArrToObj } from "../math/Vec3";
 
-const calculateDirectionalLightIntensity = (
-  polygon,
-  surfaceNormalList,
-  light,
-) => {
-  const { surfaceNormal } = surfaceNormalList.find(
-    ({ id }) => id === polygon.id,
-  );
-  const l = light.direction;
-  const dp = Vec3.dot(surfaceNormal, l);
-  return Math.max(dp, 0);
+const clamp = (val) => Math.max(Math.min(val, 255), 0);
+const clamped = (color) => [clamp(color[0]), clamp(color[1]), clamp(color[2])];
+
+const addColors = (c1, c2) => [c1[0] + c2[0], c1[1] + c2[1], c1[2] + c2[1]];
+const multiplyColors = (c1, c2) => [
+  c1[0] * c2[0],
+  c1[1] * c2[1],
+  c1[2] * c2[1],
+];
+const scaleColor = (c, scalar) => [c[0] * scalar, c[1] * scalar, c[2] * scalar];
+
+const getSurfaceNormal = (polygon, vlist) => {
+  const v0 = vertArrToObj(vlist[polygon.vertexIndices[0]]);
+  const v1 = vertArrToObj(vlist[polygon.vertexIndices[1]]);
+  const v2 = vertArrToObj(vlist[polygon.vertexIndices[2]]);
+  return Vec3.surfaceNormal(v0, v1, v2);
 };
 
-const clamp = (val) => Math.min(val, 255);
-
-export const calculateLitColor = (hexColor, intensity) => {
-  const color = hexToDec(hexColor);
-  return [
-    clamp(color[0] * intensity),
-    clamp(color[1] * intensity),
-    clamp(color[2] * intensity),
-    color[3],
-  ];
-};
-
+// So this will be the sequence:
+// 1. We go over each polygon
+//   2. For each of the vertices in that polygon, we go over it (so we will treat each vertex many times)
+//     3. For each of the lights we have, we go over it and calculate first their intensityRGB
+//     We do this by just applying `const intensityRGB = lightSource.getIntensityRGB(vertex)`
+//       4. We will also have to get the direction of the lightSource.
+//       5. Then we calculate the effect for each of those intensities on each material type
+//       6. We add up all the intensities per material type
+// 7. We store the final color in an array associated with this polygon, clamped to 255 per channel.
 export const calculateLighting = (
-  mesh,
+  tvlist,
   tplist,
   lights,
   surfaceNormalList,
   ambient = 0.2,
 ) => {
-  const result = []; // This will be the resulting list of light intensities per vertex
+  const lit = {};
   for (const polygon of tplist) {
-    let intensity = ambient;
-    for (const light of lights || []) {
-      switch (light.type) {
-        case LIGHT_TYPES.DIRECTIONAL:
-          intensity += calculateDirectionalLightIntensity(
-            polygon,
-            surfaceNormalList,
-            light,
-          );
-          break;
-        default:
-          throw new Error("Unknown light type");
+    const surfaceNormal = getSurfaceNormal(polygon, tvlist);
+    lit[polygon.id] = [];
+    const vertices = polygon.vertexIndices.map(
+      (vertexIndex) => tvlist[vertexIndex],
+    );
+
+    for (const vertex of vertices) {
+      let finalColor = [0, 0, 0];
+      for (const light of lights) {
+        const intensityRGB = light.getIntensityRGB(vertex);
+        const directionNormal = light.getDirectionNormal(vertex);
+
+        if (polygon?.materials?.ambient) {
+          const ambient = polygon.materials.ambient;
+          const intensityAmbient = multiplyColors(intensityRGB, ambient);
+          finalColor = addColors(finalColor, intensityAmbient);
+        }
+
+        if (polygon?.materials?.diffuse) {
+          const diffuse = polygon.materials.diffuse;
+          const dot = Vec3.dot(surfaceNormal, directionNormal);
+          let intensityDiffuse = multiplyColors(diffuse, intensityRGB);
+          intensityDiffuse = scaleColor(intensityDiffuse, dot);
+          finalColor = addColors(finalColor, intensityDiffuse);
+        }
+
+        // Skip specular for now
       }
+
+      lit[polygon.id].push(clamped(finalColor));
     }
-    result.push({
-      id: polygon.id,
-      intensity,
-    }); // Corresponds to the index in the tplist
   }
 
-  return result;
+  return lit;
 };
