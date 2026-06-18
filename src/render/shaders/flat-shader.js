@@ -50,9 +50,9 @@ const fillTriangleFlatBottom = (triangle, color, imageData, zBuffer) => {
     const dzx = (z2 - z1) / (crx - clx);
     let z = z1;
 
-    let base = (cy * imageData.width + Math.ceil(crx > clx ? clx : crx)) * 4;
-    let startX = Math.ceil(crx > clx ? clx : crx);
-    let endX = Math.ceil(crx > clx ? crx : clx);
+    let base = (cy * imageData.width + Math.ceil(clx)) * 4;
+    let startX = Math.ceil(clx);
+    let endX = Math.ceil(crx);
     // Clamp x to screen size
     base += startX < 0 ? startX * -1 * 4 : 0;
     z += startX < 0 ? startX * -1 * dzx : 0;
@@ -124,9 +124,9 @@ const fillTriangleFlatTop = (triangle, color, imageData, zBuffer) => {
   for (let cy = startY; cy >= endY; cy--) {
     const dzx = (z2 - z1) / (crx - clx);
     let z = z1;
-    let base = (cy * imageData.width + Math.ceil(crx > clx ? clx : crx)) * 4;
-    let startX = Math.ceil(crx > clx ? clx : crx);
-    let endX = Math.ceil(crx > clx ? crx : clx);
+    let base = (cy * imageData.width + Math.ceil(clx)) * 4;
+    let startX = Math.ceil(clx);
+    let endX = Math.ceil(crx);
     // Clamp x to screen size
     base += startX < 0 ? startX * -1 * 4 : 0;
     z += startX < 0 ? startX * -1 * dzx : 0;

@@ -4,7 +4,7 @@
  * a shader to then elaborate on. It's really quite simple. It gets complex when you start interpolating
  * values mainly.
  */
-import { plotPixel } from "./utils";
+import { plotPixel, orderLeftToRight } from "./utils";
 import { WIDTH, HEIGHT } from "../../constants";
 
 const fillTriangleFlatBottom = (triangle, color, contextData) => {
@@ -16,12 +16,8 @@ const fillTriangleFlatBottom = (triangle, color, contextData) => {
   const crx = triangle[0][0];
 
   for (let cy = triangle[0][1]; cy <= triangle[2][1]; cy++) {
-    let base = (cy * contextData.width + Math.ceil(crx > clx ? clx : crx)) * 4;
-    for (
-      let i = Math.ceil(crx > clx ? clx : crx);
-      i <= Math.ceil(crx > clx ? crx : clx);
-      i++
-    ) {
+    let base = (cy * contextData.width + Math.ceil(clx)) * 4;
+    for (let i = Math.ceil(clx); i <= Math.ceil(crx); i++) {
       contextData.data[base++] = color[0];
       contextData.data[base++] = color[1];
       contextData.data[base++] = color[2];
@@ -42,12 +38,8 @@ const fillTriangleFlatTop = (triangle, color, contextData) => {
   const crx = triangle[2][0];
 
   for (let cy = triangle[2][1]; cy >= triangle[0][1]; cy--) {
-    let base = (cy * contextData.width + Math.ceil(crx > clx ? clx : crx)) * 4;
-    for (
-      let i = Math.ceil(crx > clx ? clx : crx);
-      i <= Math.ceil(crx > clx ? crx : clx);
-      i++
-    ) {
+    let base = (cy * contextData.width + Math.ceil(clx)) * 4;
+    for (let i = Math.ceil(clx); i <= Math.ceil(crx); i++) {
       contextData.data[base++] = color[0];
       contextData.data[base++] = color[1];
       contextData.data[base++] = color[2];
@@ -64,10 +56,14 @@ const drawGeneralTriangle = (triangle, color, contextData) => {
     return a[1] - b[1];
   });
 
+  const [top, mid, bottom] = triangle;
+
   if (triangle[1][1] == triangle[2][1]) {
-    fillTriangleFlatBottom(triangle, color, contextData);
+    const [left, right] = orderLeftToRight(mid, bottom);
+    fillTriangleFlatBottom([top, left, right], color, contextData);
   } else if (triangle[0][1] == triangle[1][1]) {
-    fillTriangleFlatTop(triangle, color, contextData);
+    const [left, right] = orderLeftToRight(top, mid);
+    fillTriangleFlatTop([left, right, bottom], color, contextData);
   } else {
     const v1 = [
       triangle[0][0] +
@@ -76,7 +72,9 @@ const drawGeneralTriangle = (triangle, color, contextData) => {
           (triangle[2][1] - triangle[0][1]),
       triangle[1][1],
     ];
-    fillTriangleFlatBottom([triangle[0], triangle[1], v1], color, contextData);
-    fillTriangleFlatTop([triangle[1], v1, triangle[2]], color, contextData);
+
+    const [left, right] = orderLeftToRight(mid, v1);
+    fillTriangleFlatBottom([top, left, right], color, contextData);
+    fillTriangleFlatTop([left, right, bottom], color, contextData);
   }
 };
