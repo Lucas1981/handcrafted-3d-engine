@@ -13,84 +13,84 @@
     {
       "vertexIndices": [0, 1, 2],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [0, 2, 3],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [4, 6, 5],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [4, 7, 6],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [0, 3, 7],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [0, 7, 4],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [0, 5, 1],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [0, 4, 5],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [1, 6, 2],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [1, 5, 6],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [3, 2, 6],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     },
     {
       "vertexIndices": [3, 6, 7],
       "materials": {
-        "ambient": "#222222",
+        "ambient": "#888888",
         "diffuse": "#ff0000"
       }
     }

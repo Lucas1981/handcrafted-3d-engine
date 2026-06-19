@@ -18,7 +18,8 @@ const N_MAX = 4;
 const interps = new Array(N_MAX).fill(0);
 const dnx = new Array(N_MAX).fill(0);
 
-const fillTriangleGouraudBottom = (triangle, imageData, zBuffer) => {
+// Starts at the top, then works on down.
+const fillTriangleGouraudFlatBottom = (triangle, imageData, zBuffer) => {
   // 1. Set up basic conditions
 
   const dxl =
@@ -97,7 +98,7 @@ const fillTriangleGouraudBottom = (triangle, imageData, zBuffer) => {
   }
 };
 
-const fillTriangleGouraudTop = (triangle, imageData, zBuffer) => {
+const fillTriangleGouraudFlatTop = (triangle, imageData, zBuffer) => {
   // 1. Set up basic conditions
 
   const dxl =
@@ -198,11 +199,11 @@ export const drawTriangleGouraudShaded = (
   const [top, mid, bottom] = triangle;
 
   if (triangle[1][1] == triangle[2][1]) {
-    const [left, right] = orderLeftToRight(top, mid);
-    fillTriangleGouraudBottom([top, left, right], imageData, zBuffer);
-  } else if (triangle[0][1] == triangle[1][1]) {
     const [left, right] = orderLeftToRight(mid, bottom);
-    fillTriangleGouraudTop([left, right, bottom], imageData, zBuffer);
+    fillTriangleGouraudFlatBottom([top, left, right], imageData, zBuffer);
+  } else if (triangle[0][1] == triangle[1][1]) {
+    const [left, right] = orderLeftToRight(top, mid);
+    fillTriangleGouraudFlatTop([left, right, bottom], imageData, zBuffer);
   } else {
     const v1 = [
       getNewPointValue(triangle, 0), // x
@@ -214,7 +215,7 @@ export const drawTriangleGouraudShaded = (
     ];
 
     const [left, right] = orderLeftToRight(mid, v1);
-    fillTriangleGouraudBottom([top, left, right], imageData, zBuffer);
-    fillTriangleGouraudTop([left, right, bottom], imageData, zBuffer);
+    fillTriangleGouraudFlatBottom([top, left, right], imageData, zBuffer);
+    fillTriangleGouraudFlatTop([left, right, bottom], imageData, zBuffer);
   }
 };

@@ -80,7 +80,8 @@ export class Vec3 {
   static surfaceNormal(v0, v1, v2) {
     const e1 = Vec3.sub(v1, v0);
     const e2 = Vec3.sub(v2, v0);
-    const n = Vec3.cross(e1, e2);
+    // This order matters! This makes the normals face outward from the surfaces.
+    const n = Vec3.cross(e2, e1);
     return Vec3.normal(n);
   }
 

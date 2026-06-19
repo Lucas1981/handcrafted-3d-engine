@@ -7,7 +7,7 @@ export const applyBackfaceCulling = (plist, vlist) => {
     const v2 = vertArrToObj(vlist[polygon.vertexIndices[2]]);
     const surfaceNormal = Vec3.surfaceNormal(v0, v1, v2);
     const dp = Vec3.dot(v0, surfaceNormal);
-    return dp >= 0;
+    return dp < 0;
   });
 
   return tplist;
