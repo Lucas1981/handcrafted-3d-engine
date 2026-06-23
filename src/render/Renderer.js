@@ -41,13 +41,13 @@ export class Renderer {
       }
       const tplist = this.#cullBackfaces(mv, mesh);
       const world = this.#transformVecList(model, mesh);
-      const lighting = calculateLighting(world, tplist, lights);
+      const lighting = calculateLighting(world, tplist, lights, 0.3);
       const mvp = Mat4.multiply(mv, this.projectionMatrix);
       const tvlist = this.#transformVecList(mvp, mesh);
       const projected = this.#getProjectedCoordinates(tvlist);
       const finalPolygons = this.#cullPolygons(projected, tplist);
       const screen = this.#getScreenCoordinates(projected, tvlist);
-      this.graphics.drawGouraudShaded(screen, finalPolygons, lighting);
+      this.graphics.drawTexturedGouraudShaded(screen, finalPolygons, lighting);
     }
   }
 

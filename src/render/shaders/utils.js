@@ -5,6 +5,19 @@ export const plotPixel = (imageData, base, color) => {
   imageData.data[base + 3] = color[3];
 };
 
+export const getTexel = (imageData, base) => [
+  imageData.data[base],
+  imageData.data[base + 1],
+  imageData.data[base + 2],
+  imageData.data[base + 3],
+];
+
+export const blendColor = (c1, c2) => [
+  (c1[0] / 255) * c2[0],
+  (c1[1] / 255) * c2[2],
+  (c1[2] / 255) * c2[2],
+];
+
 export const hexToDec = (color) => {
   if (color.length !== 7) {
     throw new Error("Not a valid hex color value");

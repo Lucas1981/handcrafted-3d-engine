@@ -8,7 +8,7 @@ export class PointLight {
     color = [255, 255, 255],
     kc = 1,
     kl = 0.5,
-    kq = 0,
+    kq = 0.2,
   ) {
     this.type = LIGHT_TYPES.POINT;
     this.intensity = intensity;

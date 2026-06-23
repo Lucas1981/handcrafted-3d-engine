@@ -48,6 +48,7 @@ export const calculateLighting = (
       if (polygon?.materials?.ambient) {
         const ambient = polygon.materials.ambient;
         const intensityAmbient = clamped(scaleColor(ambient, ambientScalar));
+        console.log(intensityAmbient);
         finalColor = addColors(finalColor, intensityAmbient);
       }
 

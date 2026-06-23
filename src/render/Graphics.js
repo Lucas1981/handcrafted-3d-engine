@@ -1,6 +1,7 @@
 import { WIDTH, HEIGHT } from "../constants";
 // import { drawTriangleFlatShade } from "./shaders/flat-shader";
 import { drawTriangleGouraudShaded } from "./shaders/gouraud-shader";
+import { drawTriangleTexturedGouraudShaded } from "./shaders/textured-gouraud-shader";
 
 export class Graphics {
   constructor(canvas) {
@@ -72,6 +73,19 @@ export class Graphics {
     for (const polygon of polygons) {
       const colors = lighting[polygon.id];
       drawTriangleGouraudShaded(
+        polygon,
+        colors,
+        screen,
+        this.imageData,
+        this.zBuffer,
+      );
+    }
+  }
+
+  drawTexturedGouraudShaded(screen, polygons, lighting, z) {
+    for (const polygon of polygons) {
+      const colors = lighting[polygon.id];
+      drawTriangleTexturedGouraudShaded(
         polygon,
         colors,
         screen,

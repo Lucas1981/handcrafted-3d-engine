@@ -1,0 +1,358 @@
+{
+  "vertices": [
+    [
+      -1,
+      -1,
+      -1
+    ],
+    [
+      1,
+      -1,
+      -1
+    ],
+    [
+      1,
+      1,
+      -1
+    ],
+    [
+      -1,
+      1,
+      -1
+    ],
+    [
+      -1,
+      -1,
+      1
+    ],
+    [
+      1,
+      -1,
+      1
+    ],
+    [
+      1,
+      1,
+      1
+    ],
+    [
+      -1,
+      1,
+      1
+    ]
+  ],
+  "polygons": [
+    {
+      "vertexIndices": [
+        0,
+        1,
+        2
+      ],
+      "texture": "./assets/wall-colored-a+b.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        0,
+        2,
+        3
+      ],
+      "texture": "./assets/wall-colored-a+b.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        4,
+        7,
+        6
+      ],
+      "texture": "./assets/wall-colored-c+d.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        4,
+        6,
+        5
+      ],
+      "texture": "./assets/wall-colored-c+d.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        0,
+        3,
+        7
+      ],
+      "texture": "./assets/wall-colored-e+f.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        0,
+        7,
+        4
+      ],
+      "texture": "./assets/wall-colored-e+f.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        0,
+        4,
+        5
+      ],
+      "texture": "./assets/wall-colored-g+h.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        0,
+        5,
+        1
+      ],
+      "texture": "./assets/wall-colored-g+h.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        1,
+        5,
+        6
+      ],
+      "texture": "./assets/wall-colored-i+j.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        1,
+        6,
+        2
+      ],
+      "texture": "./assets/wall-colored-i+j.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        3,
+        2,
+        6
+      ],
+      "texture": "./assets/wall-colored-k+l.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "vertexIndices": [
+        3,
+        6,
+        7
+      ],
+      "texture": "./assets/wall-colored-k+l.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  ]
+}

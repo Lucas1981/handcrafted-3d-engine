@@ -3,12 +3,14 @@ import { Mat4 } from "../math/Mat4";
 import { Vec3 } from "../math/Vec3";
 
 export class Mesh3D {
-  constructor(data) {
+  constructor(data, textureMap) {
     this.pos = { x: 0, y: 0, z: 0 };
     this.rot = { x: 0, y: 0, z: 0 };
     this.scale = 1;
     this.vlist = JSON.parse(JSON.stringify(data.vertices));
-    this.plist = data.polygons.map((polygon, idx) => new Polygon(polygon, idx));
+    this.plist = data.polygons.map(
+      (polygon, idx) => new Polygon(polygon, idx, textureMap),
+    );
     this.maxRadius = this.vlist
       .map(([x, y, z]) => ({ x, y, z }))
       .reduce((acc, curr) => {
