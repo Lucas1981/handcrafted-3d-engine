@@ -42,8 +42,8 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 - [x] Create a new Gouraud shader next to the flat shader that extends this principle and adds interpolation for the light intensity between the points of the triangle.
 - [x] Add support for spotlights (+ bug fixes)
 - [x] Add a Gouraud/texture shader that extends the Gouraud shader by being able to interpolate over the coordinates of a texture to map pixels onto our polygons with added UV coordinates.
+- [x] Add support for specular light.
 - [ ] Add a near-plane clipper.
-- [ ] Add support for specular light.
 
 ### Bonus
 

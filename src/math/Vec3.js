@@ -85,6 +85,13 @@ export class Vec3 {
     return Vec3.normal(n);
   }
 
+  // Formula is: R = 2 * (N . L) * N - L, where 2 * (N . L) is the scalar for vector N.
+  static getReflectionVector(n, v) {
+    const twoDot = 2 * Vec3.dot(n, v);
+    const scaledN = Vec3.scale(n, twoDot);
+    return Vec3.sub(scaledN, v);
+  }
+
   // This method shouldn't be used, but it illustrates how the cross product between two
   // vectors can be decomposed. If u x v = |u| * |v| * sin(theta) * n, where |u| * |v| * sin(theta)
   // is the scalar, then n can be found with n = normal(u x v). So, naturally, u x v already

@@ -33,6 +33,7 @@ export const calculateLighting = (
   tvlist,
   tplist,
   lights,
+  camera,
   ambientScalar = 0.2,
 ) => {
   const lit = {};
@@ -44,27 +45,54 @@ export const calculateLighting = (
     );
 
     for (const vertex of vertices) {
+      if (polygon?.materials?.emissive) {
+        const { emissive } = polygon.materials;
+        lit[polygon.id].push(emissive);
+        continue;
+      }
+
       let finalColor = [0, 0, 0];
       if (polygon?.materials?.ambient) {
         const ambient = polygon.materials.ambient;
         const intensityAmbient = clamped(scaleColor(ambient, ambientScalar));
-        console.log(intensityAmbient);
         finalColor = addColors(finalColor, intensityAmbient);
       }
 
       for (const light of lights) {
         const intensityRGB = light.getIntensityRGB(vertex);
         const directionNormal = light.getDirectionNormal(vertex);
+        const directionSurfaceDot = Vec3.dot(directionNormal, surfaceNormal);
 
         if (polygon?.materials?.diffuse) {
-          const diffuse = polygon.materials.diffuse;
-          const dot = Math.max(Vec3.dot(directionNormal, surfaceNormal), 0);
+          const { diffuse } = polygon.materials;
+          const dot = Math.max(directionSurfaceDot, 0);
           let intensityDiffuse = multiplyColors(diffuse, intensityRGB);
           intensityDiffuse = scaleColor(intensityDiffuse, dot);
           finalColor = addColors(finalColor, intensityDiffuse);
         }
 
-        // Skip specular and emissive for now
+        if (polygon?.materials?.specular) {
+          // See LaMothe, p. 754-755
+          const { specular } = polygon.material;
+          const reflectionVectorNormal = Vec3.getReflectionVector(
+            surfaceNormal,
+            directionNormal,
+          );
+          const cameraPos = camera.getPos();
+          const viewVectorNormal = Vec3.normal(Vec3.sub(cameraPos, vertex));
+          const dot = Math.max(
+            Vec3.dot(reflectionVectorNormal, viewVectorNormal),
+            0,
+          );
+          const factor = Math.pow(dot, polygon.specularPower);
+          let intensitySpecular = multiplyColors(specular, intensityRGB);
+          intensitySpecular = scaleColor(intensitySpecular, factor);
+          intensitySpecular = scaleColor(
+            intensitySpecular,
+            directionSurfaceDot > 0 ? 1 : 0,
+          );
+          finalColor = addColors(finalColor, intensitySpecular);
+        }
       }
 
       lit[polygon.id].push(clamped(finalColor));

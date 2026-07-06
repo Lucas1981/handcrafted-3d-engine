@@ -23,14 +23,14 @@ export class Renderer {
     const view = camera.getCameraTransformMatrix();
     this.#clearScreen();
     this.graphics.resetZBuffer();
-    this.#pipeline(view, meshes, lights);
+    this.#pipeline(view, meshes, lights, camera);
     this.graphics.putImageData();
     if (DRAW_LIGHT_SOURCES) {
       this.#drawLightSources(view, lights);
     }
   }
 
-  #pipeline(view, meshes, lights) {
+  #pipeline(view, meshes, lights, camera) {
     for (const mesh of meshes) {
       const model = mesh.getModelMatrix();
       const mv = Mat4.multiply(model, view);
@@ -41,7 +41,7 @@ export class Renderer {
       }
       const tplist = this.#cullBackfaces(mv, mesh);
       const world = this.#transformVecList(model, mesh);
-      const lighting = calculateLighting(world, tplist, lights, 0.3);
+      const lighting = calculateLighting(world, tplist, lights, camera, 0.3);
       const mvp = Mat4.multiply(mv, this.projectionMatrix);
       const tvlist = this.#transformVecList(mvp, mesh);
       const projected = this.#getProjectedCoordinates(tvlist);
