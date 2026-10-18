@@ -69,9 +69,9 @@ export class Graphics {
     }
   }
 
-  drawGouraudShaded(screen, polygons, lighting, z) {
+  drawGouraudShaded(screen, polygons, z) {
     for (const polygon of polygons) {
-      const colors = lighting[polygon.id];
+      const colors = polygon.lighting;
       drawTriangleGouraudShaded(
         polygon,
         colors,
@@ -82,9 +82,9 @@ export class Graphics {
     }
   }
 
-  drawTexturedGouraudShaded(screen, polygons, lighting, z) {
+  drawTexturedGouraudShaded(screen, polygons, z) {
     for (const polygon of polygons) {
-      const colors = lighting[polygon.id];
+      const colors = polygon.lighting;
       drawTriangleTexturedGouraudShaded(
         polygon,
         colors,
@@ -93,5 +93,20 @@ export class Graphics {
         this.zBuffer,
       );
     }
+  }
+
+  drawLine(x1, y1, x2, y2, stroke) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(x1, y1);
+    this.ctx.lineTo(x2, y2);
+    this.ctx.strokeStyle = stroke;
+    this.ctx.stroke();
+  }
+
+  drawCircle(x, y, radius, fill) {
+    this.ctx.beginPath();
+    this.ctx.fillStyle = fill;
+    this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    this.ctx.fill();
   }
 }

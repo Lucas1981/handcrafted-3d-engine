@@ -1,8 +1,9 @@
 import { hexToDec } from "../render/shaders/utils";
 
 export class Polygon {
-  constructor(data, index, textureMap) {
-    this.id = index;
+  constructor(data, id, textureMap) {
+    this.id = id;
+    this.data = data; // Keep a raw copy so we can clone
     this.materials = Object.entries(data?.materials || {}).reduce(
       (acc, curr) => ({
         ...acc,
@@ -21,6 +22,7 @@ export class Polygon {
       }
     }
     this.uvs = data?.uvs ? JSON.parse(JSON.stringify(data.uvs)) : null;
+    this.lighting = [];
   }
 
   getTexture() {
@@ -29,5 +31,21 @@ export class Polygon {
     }
 
     return this.textureMap.getTexture(this.textureKey);
+  }
+
+  setVertexIndices(vertexIndices) {
+    this.vertexIndices = [...vertexIndices];
+  }
+
+  setLighting(lighting) {
+    this.lighting = lighting;
+  }
+
+  setUvs(uvs) {
+    this.uvs = uvs;
+  }
+
+  getClone() {
+    return Object.create(this);
   }
 }

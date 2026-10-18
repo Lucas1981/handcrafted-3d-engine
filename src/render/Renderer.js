@@ -6,31 +6,42 @@ import {
   W_EPS,
   APPLY_BACKFACE_CULLING,
   DRAW_LIGHT_SOURCES,
+  DEBUG_DRAW_BIRDS_EYE_VIEW,
 } from "../constants";
 import { Mat4 } from "../math/Mat4";
 import { isMeshVisible } from "./mesh-culling";
 import { applyBackfaceCulling } from "./backface-culling";
 import { calculateLighting } from "../light/calculate-lighting";
 import { Graphics } from "./Graphics";
+import { drawBirdsEyeView } from "./birds-eye-view.js";
+import { clipAgainstNearPlane } from "./near-plane-clipping.js";
 
 export class Renderer {
   constructor(canvas, projectionMatrix) {
     this.graphics = new Graphics(canvas);
     this.projectionMatrix = projectionMatrix;
+
+    // Cache this for the optional birds-eye-view debug viewing
+    this.clippedVertices = null;
+    this.finalPolygons = null;
   }
 
-  render(meshes, camera, lights) {
+  render(meshes, camera, lights, ambient = 0.3) {
     const view = camera.getCameraTransformMatrix();
     this.#clearScreen();
     this.graphics.resetZBuffer();
-    this.#pipeline(view, meshes, lights, camera);
+    this.#pipeline(view, meshes, lights, camera, ambient);
     this.graphics.putImageData();
     if (DRAW_LIGHT_SOURCES) {
       this.#drawLightSources(view, lights);
     }
+
+    if (DEBUG_DRAW_BIRDS_EYE_VIEW) {
+      drawBirdsEyeView(this.graphics, this.clippedVertices, this.finalPolygons);
+    }
   }
 
-  #pipeline(view, meshes, lights, camera) {
+  #pipeline(view, meshes, lights, camera, ambient) {
     for (const mesh of meshes) {
       const model = mesh.getModelMatrix();
       const mv = Mat4.multiply(model, view);
@@ -41,13 +52,31 @@ export class Renderer {
       }
       const tplist = this.#cullBackfaces(mv, mesh);
       const world = this.#transformVecList(model, mesh);
-      const lighting = calculateLighting(world, tplist, lights, camera, 0.3);
+      const lighting = calculateLighting(
+        world,
+        tplist,
+        lights,
+        camera,
+        ambient,
+      );
       const mvp = Mat4.multiply(mv, this.projectionMatrix);
       const tvlist = this.#transformVecList(mvp, mesh);
-      const projected = this.#getProjectedCoordinates(tvlist);
-      const finalPolygons = this.#cullPolygons(projected, tplist);
-      const screen = this.#getScreenCoordinates(projected, tvlist);
+      // This is where we need to apply the near-z clipping
+      const { clippedVertices, clippedPolygons } = clipAgainstNearPlane(
+        tvlist,
+        tplist,
+        lighting,
+      );
+
+      const projected = this.#getProjectedCoordinates(clippedVertices);
+      const finalPolygons = this.#cullPolygons(projected, clippedPolygons);
+      const screen = this.#getScreenCoordinates(projected, clippedVertices);
       this.graphics.drawTexturedGouraudShaded(screen, finalPolygons, lighting);
+
+      if (DEBUG_DRAW_BIRDS_EYE_VIEW) {
+        this.clippedVertices = clippedVertices;
+        this.finalPolygons = finalPolygons;
+      }
     }
   }
 

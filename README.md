@@ -43,10 +43,17 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 - [x] Add support for spotlights (+ bug fixes)
 - [x] Add a Gouraud/texture shader that extends the Gouraud shader by being able to interpolate over the coordinates of a texture to map pixels onto our polygons with added UV coordinates.
 - [x] Add support for specular light.
-- [ ] Add a near-plane clipper.
+- [x] Add a near-plane clipper.
 
-### Bonus
+### Notes
 
-- [ ] Apply perspective-correct interpolation to lighting.
-- [ ] Switch from Gouraud to Phong shading, interpolating the surface normals rather than the light intensity, calculating the light intensity per-pixel. Would also mean the surface normals would have to be calculated taking into account their adjacent polygon neighbors.
-- [ ] Try a baked-in scene where the light values are already pre-calculated using a light map.
+One thing I didn't anticipate was that we'd have to build up the list of vertices and polygons from scratch once we introduced the near-z clipping. That kind of upended the whole architecture I had going, treating the polygons as defined once and then just set and forgotten, treated as static data. Having to check if polygons are clipping on the near-z limit demands that we actually create new vertices and polygons on the fly. For example lighting is then kind of messed up, since so far I made a connection between the lighting values and the polygons based on the `id` I'd attribute to the polygons at instantiation. That won't work anymore now. So now, I decided to compromise by creating new instances of the polygons based on clones inside the `near-plane-clipping.js` function, getting the `lighting` values out before that, and then just putting them on a public member `lighting` that the polygons themselves own. That way they end up in the right place, and later we can read them from the polygons rather than matching them on `id` as we apply the lighting in the `drawTexturedGouraudShaded` method on the `Graphics` class. But I'm not loving that! For this go it's fine, but I'd reconsider how I'd treat the polygons next time, knowing now that they won't be as static due to this clipping step as I initially thought they'd turn out to be.
+
+### Next steps
+
+- Apply perspective-correct interpolation to lighting.
+- Switch from Gouraud to Phong shading, interpolating the surface normals rather than the light intensity, calculating the light intensity per-pixel. Would also mean the surface normals would have to be calculated taking into account their adjacent polygon neighbors.
+- Try a baked-in scene where the light values are already pre-calculated using a light map.
+- Try making use of a BSP tree.
+- Use the quaternions-based camera system.
+- Reconsider the polygons setup, keeping in mind near-z clipping.

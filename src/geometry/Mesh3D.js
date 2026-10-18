@@ -9,7 +9,7 @@ export class Mesh3D {
     this.scale = 1;
     this.vlist = JSON.parse(JSON.stringify(data.vertices));
     this.plist = data.polygons.map(
-      (polygon, idx) => new Polygon(polygon, idx, textureMap),
+      (polygon, id) => new Polygon(polygon, id, textureMap),
     );
     this.maxRadius = this.vlist
       .map(([x, y, z]) => ({ x, y, z }))

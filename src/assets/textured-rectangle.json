@@ -1,0 +1,36 @@
+{
+  "vertices": [
+    [-1, -1, -1],
+    [1, -1, -1],
+    [1, 1, -1],
+    [-1, 1, -1]
+  ],
+  "polygons": [
+    {
+      "vertexIndices": [0, 1, 2],
+      "texture": "./assets/wall-colored-a+b.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [0, 0],
+        [0, 1],
+        [1, 1]
+      ]
+    },
+    {
+      "vertexIndices": [0, 2, 3],
+      "texture": "./assets/wall-colored-a+b.png",
+      "materials": {
+        "ambient": "#ffffff",
+        "diffuse": "#ffffff"
+      },
+      "uvs": [
+        [0, 0],
+        [1, 1],
+        [1, 0]
+      ]
+    }
+  ]
+}
