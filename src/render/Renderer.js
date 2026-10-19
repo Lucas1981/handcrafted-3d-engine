@@ -143,7 +143,7 @@ export class Renderer {
       x: Math.floor((p.x + 1) * HALF_SCREEN_WIDTH),
       y: Math.floor((-p.y + 1) * HALF_SCREEN_HEIGHT),
       // NOTE: Once we introduce near-plane clipping, we will have to recompute depth.
-      depth: 1 / (tvlist[index][2] || W_EPS),
+      depth: 1 / tvlist[index][3],
     }));
   }
 

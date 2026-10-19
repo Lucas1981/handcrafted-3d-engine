@@ -38,8 +38,8 @@ export class Mat4 {
     return [scale, 0, 0, 0, 0, scale, 0, 0, 0, 0, scale, 0, 0, 0, 0, 1];
   }
 
-  static perspective(d, ar) {
-    return [d, 0, 0, 0, 0, d * ar, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0];
+  static perspective(d, ar, near) {
+    return [d, 0, 0, 0, 0, d * ar, 0, 0, 0, 0, 1, 1, 0, 0, -near, 0];
   }
 
   static multiply(m1, m2) {

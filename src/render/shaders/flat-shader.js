@@ -110,8 +110,8 @@ const fillTriangleFlatTop = (triangle, color, imageData, zBuffer) => {
   // 3. Clamp y to screen size (must be done here to potentially compensate interpolants)
 
   endY = endY < 0 ? 0 : endY;
-  if (startY > HEIGHT) {
-    const diff = startY - HEIGHT;
+  if (startY > HEIGHT - 1) {
+    const diff = startY - (HEIGHT - 1);
     crx -= dxr * diff;
     clx -= dxl * diff;
     z1 += dyz1 * diff;

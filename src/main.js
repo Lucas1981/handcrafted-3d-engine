@@ -1,5 +1,5 @@
 import "./style.css";
-import { WIDTH, HEIGHT, ASPECT_RATIO, FOV } from "./constants.js";
+import { WIDTH, HEIGHT, ASPECT_RATIO, FOV, NEAR } from "./constants.js";
 import { Mat4 } from "./math/Mat4.js";
 import { degToRad } from "./math/trig.js";
 // import cubeJson from "./assets/cube.json";
@@ -21,6 +21,7 @@ const halfFOVAngleInRadians = degToRad * (FOV / 2);
 const projectionMatrix = Mat4.perspective(
   Math.tan(halfFOVAngleInRadians),
   ASPECT_RATIO,
+  NEAR,
 );
 const renderer = new Renderer(canvas, projectionMatrix);
 const camera = new Camera();

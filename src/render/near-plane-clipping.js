@@ -36,7 +36,6 @@ export const clipAgainstNearPlane = (tvlist, tplist, lighting) => {
 
   for (const polygon of tplist) {
     const lit = lighting[polygon.id]; // id still matches here, but won't as soon as we clone
-    console.log("lit", lit);
     const vertices = polygon.vertexIndices.map((i, index) => [
       ...tvlist[i],
       // Include the U and V coordinates for each of the vertices
@@ -73,7 +72,6 @@ export const clipAgainstNearPlane = (tvlist, tplist, lighting) => {
     const clippedVertices = clipped.map((arr) => arr.slice(0, 4));
     const clippedUvs = clipped.map((arr) => arr.slice(4, 6));
     const clippedLighting = clipped.map((arr) => arr.slice(6, 9));
-    console.log("clippedLighting", clippedLighting);
     finalVertices.push(...clippedVertices);
 
     for (let i = 1; i < clipped.length - 1; i++) {
