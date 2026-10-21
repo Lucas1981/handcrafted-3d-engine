@@ -16,7 +16,7 @@ export const FAR = 1000;
 export const APPLY_BACKFACE_CULLING = true;
 export const DRAW_LIGHT_SOURCES = false;
 export const DEBUG_DRAW_BIRDS_EYE_VIEW = false;
-export const SHOW_FPS = false;
+export const SHOW_FPS = true;
 export const LIGHT_TYPES = {
   DIRECTIONAL: "directional",
   POINT: "point",

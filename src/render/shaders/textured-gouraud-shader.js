@@ -1,11 +1,9 @@
 import {
-  plotPixel,
   getNewPointValue,
   addScaledInPlace,
   copyInPlace,
   setDnx,
   orderLeftToRight,
-  getTexel,
 } from "./utils";
 import { WIDTH, HEIGHT } from "../../constants";
 
@@ -20,12 +18,7 @@ const N_MAX = 6;
 
 const interps = new Array(N_MAX).fill(0);
 const dnx = new Array(N_MAX).fill(0);
-const multiplyColors = (c1, c2) => [
-  (c1[0] / 255) * c2[0],
-  (c1[1] / 255) * c2[1],
-  (c1[2] / 255) * c2[2],
-  255,
-];
+const inv255 = 1 / 255;
 
 // Starts at the top, then works on down.
 const fillTriangleTexturedGouraudFlatBottom = (
@@ -93,22 +86,24 @@ const fillTriangleTexturedGouraudFlatBottom = (
       const depth = interps[Z_BUFFER_INDEX];
       if (zBuffer[zBufferBase] < depth) {
         zBuffer[zBufferBase] = depth;
-        const color = [
-          Math.round(interps[RED_INDEX]),
-          Math.round(interps[GREEN_INDEX]),
-          Math.round(interps[BLUE_INDEX]),
-          255,
-        ];
-
-        const u = (interps[U_INDEX] / depth) * texture.width;
-        const v = (interps[V_INDEX] / depth) * texture.height;
+        const invDepth = 1 / depth;
+        const u = interps[U_INDEX] * invDepth * texture.width;
+        const v = interps[V_INDEX] * invDepth * texture.height;
         const tu = Math.max(Math.min(Math.round(u), texture.width - 1), 0);
         const tv = Math.max(Math.min(Math.round(v), texture.height - 1), 0);
         const textelBase = Math.round(tu + tv * texture.width) * 4;
-        const texel = getTexel(texture, textelBase);
-        const finalColor = multiplyColors(color, texel);
 
-        plotPixel(imageData, base, finalColor);
+        imageData.data[base] =
+          inv255 * texture.data[textelBase] * Math.round(interps[RED_INDEX]);
+        imageData.data[base + 1] =
+          inv255 *
+          texture.data[textelBase + 1] *
+          Math.round(interps[GREEN_INDEX]);
+        imageData.data[base + 2] =
+          inv255 *
+          texture.data[textelBase + 2] *
+          Math.round(interps[BLUE_INDEX]);
+        imageData.data[base + 3] = inv255 * texture.data[textelBase + 3] * 255;
       }
       base += 4;
       addScaledInPlace(dnx, interps);
@@ -187,22 +182,24 @@ const fillTriangleTexturedGouraudFlatTop = (
       const depth = interps[Z_BUFFER_INDEX];
       if (zBuffer[zBufferBase] < depth) {
         zBuffer[zBufferBase] = depth;
-        const color = [
-          Math.round(interps[RED_INDEX]),
-          Math.round(interps[GREEN_INDEX]),
-          Math.round(interps[BLUE_INDEX]),
-          255,
-        ];
-
-        const u = (interps[U_INDEX] / depth) * texture.width;
-        const v = (interps[V_INDEX] / depth) * texture.height;
+        const invDepth = 1 / depth;
+        const u = interps[U_INDEX] * invDepth * texture.width;
+        const v = interps[V_INDEX] * invDepth * texture.height;
         const tu = Math.max(Math.min(Math.round(u), texture.width - 1), 0);
         const tv = Math.max(Math.min(Math.round(v), texture.height - 1), 0);
         const textelBase = Math.round(tu + tv * texture.width) * 4;
-        const texel = getTexel(texture, textelBase);
-        const finalColor = multiplyColors(color, texel);
 
-        plotPixel(imageData, base, finalColor);
+        imageData.data[base] =
+          inv255 * texture.data[textelBase] * Math.round(interps[RED_INDEX]);
+        imageData.data[base + 1] =
+          inv255 *
+          texture.data[textelBase + 1] *
+          Math.round(interps[GREEN_INDEX]);
+        imageData.data[base + 2] =
+          inv255 *
+          texture.data[textelBase + 2] *
+          Math.round(interps[BLUE_INDEX]);
+        imageData.data[base + 3] = inv255 * texture.data[textelBase + 3] * 255;
       }
       addScaledInPlace(dnx, interps);
       base += 4;
