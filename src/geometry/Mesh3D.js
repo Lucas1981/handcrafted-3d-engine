@@ -3,8 +3,8 @@ import { Mat4 } from "../math/Mat4";
 import { Vec3 } from "../math/Vec3";
 
 export class Mesh3D {
-  constructor(data, textureMap) {
-    this.pos = { x: 0, y: 0, z: 0 };
+  constructor(data, textureMap, pos = { x: 0, y: 0, z: 0 }) {
+    this.pos = { ...pos };
     this.rot = { x: 0, y: 0, z: 0 };
     this.scale = 1;
     this.vlist = JSON.parse(JSON.stringify(data.vertices));

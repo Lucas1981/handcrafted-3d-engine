@@ -1,18 +1,27 @@
 import "./style.css";
-import { WIDTH, HEIGHT, ASPECT_RATIO, FOV, NEAR } from "./constants.js";
+import {
+  WIDTH,
+  HEIGHT,
+  ASPECT_RATIO,
+  FOV,
+  NEAR,
+  SHOW_FPS,
+} from "./constants.js";
 import { Mat4 } from "./math/Mat4.js";
 import { degToRad } from "./math/trig.js";
 // import cubeJson from "./assets/cube.json";
 // import torusJson from "./assets/torus.json";
 // import texturedCubeJson from "./assets/textured-cube.json";
-import texturedRectangle from "./assets/textured-rectangle.json";
+import room from "./assets/room.json";
 import { Mesh3D } from "./geometry/Mesh3D.js";
 import { Camera } from "./geometry/Camera.js";
 import { Renderer } from "./render/Renderer.js";
 import { DirectionalLight } from "./light/DirectionalLight.js";
 import { PointLight } from "./light/PointLight.js";
+import { SpotLight } from "./light/SpotLight.js";
 import { Vec3 } from "./math/Vec3.js";
 import { TextureMap } from "./texture/TextureMap.js";
+import { Inputs } from "./inputs";
 
 const degreesPerSecond = 15;
 const canvas = document.getElementById("canvas");
@@ -25,13 +34,15 @@ const projectionMatrix = Mat4.perspective(
 );
 const renderer = new Renderer(canvas, projectionMatrix);
 const camera = new Camera();
-camera.setPos({ x: 0, y: 0, z: 0 });
-const mesh = new Mesh3D(texturedRectangle, textureMap);
+camera.setPos({ x: 0, y: -0.2, z: 5 });
+const mesh = new Mesh3D(room, textureMap);
 mesh.setPosition({ x: 0, y: 0, z: 5 });
 const meshes = [mesh];
+const AMBIENT_LIGHT = 0.5;
 const lights = [
-  new DirectionalLight(1, [255, 255, 255], { x: 0, y: 0, z: 1 }),
-  // new PointLight(1, { x: 0, y: 1, z: 3 }),
+  // new DirectionalLight(1, [255, 255, 255], { x: 0, y: 0, z: 1 }),
+  new PointLight(1, { x: 0, y: 1, z: 3 }),
+  // new SpotLight(10, { x: 5, y: 0, z: 5 }, { x: 0, y: 0, z: 1 }),
 ];
 
 canvas.width = WIDTH;
@@ -39,41 +50,49 @@ canvas.height = HEIGHT;
 
 let lastTime = Date.now();
 
-const rot = mesh.getRotation();
-mesh.setRotation({
-  x: 90,
-  y: rot.y,
-  z: rot.z,
-});
-const pos = mesh.getPosition();
-mesh.setPosition({
-  ...pos,
-  z: pos.z - 3,
-  y: -1.1,
-});
+const inputs = new Inputs();
 
-const base = mesh.getPosition().z;
-let angle = 0;
+const handleInputs = (elapsedTime) => {
+  const keymap = inputs.getKeymap();
+  if (keymap.ArrowUp) {
+    camera.moveForward(0.001 * elapsedTime);
+  }
+
+  if (keymap.ArrowDown) {
+    camera.moveForward(-0.001 * elapsedTime);
+  }
+
+  if (keymap.ArrowRight) {
+    camera.increaseElevation(0.05 * elapsedTime);
+  }
+
+  if (keymap.ArrowLeft) {
+    camera.increaseElevation(-0.05 * elapsedTime);
+  }
+
+  if (keymap.w) {
+    camera.increaseHeading(0.05 * elapsedTime);
+  }
+
+  if (keymap.s) {
+    camera.increaseHeading(-0.05 * elapsedTime);
+  }
+};
+
+const showFPS = (elapsedTime) => {
+  renderer.write(10, 10, parseInt(1000 / elapsedTime));
+};
 
 const main = () => {
   const currentTime = Date.now();
   const elapsedTime = currentTime - lastTime;
   lastTime = currentTime;
-
-  angle += elapsedTime * 0.001;
-
-  mesh.setPosition({
-    ...mesh.pos,
-    z: base + Math.sin(angle) * 2,
-  });
-  // const rot = mesh.getRotation();
-  // mesh.setRotation({
-  //   x: (rot.x + (1 / 360) * elapsedTime * degreesPerSecond * 0.5) % 360,
-  //   y: (rot.y + (1 / 360) * elapsedTime * degreesPerSecond) % 360,
-  //   z: (rot.z + (1 / 360) * elapsedTime * degreesPerSecond) % 360,
-  // });
-
-  renderer.render(meshes, camera, lights, 1);
+  handleInputs(elapsedTime);
+  const p = performance.now();
+  renderer.render(meshes, camera, lights, AMBIENT_LIGHT);
+  if (SHOW_FPS) {
+    showFPS(performance.now() - p);
+  }
   requestAnimationFrame(main);
 };
 

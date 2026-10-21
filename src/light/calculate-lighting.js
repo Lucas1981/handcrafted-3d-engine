@@ -73,18 +73,20 @@ export const calculateLighting = (
 
         if (polygon?.materials?.specular) {
           // See LaMothe, p. 754-755
-          const { specular } = polygon.material;
+          const { specular } = polygon.materials;
           const reflectionVectorNormal = Vec3.getReflectionVector(
             surfaceNormal,
             directionNormal,
           );
           const cameraPos = camera.getPos();
-          const viewVectorNormal = Vec3.normal(Vec3.sub(cameraPos, vertex));
+          const viewVectorNormal = Vec3.normal(
+            Vec3.sub(cameraPos, vertArrToObj(vertex)),
+          );
           const dot = Math.max(
             Vec3.dot(reflectionVectorNormal, viewVectorNormal),
             0,
           );
-          const factor = Math.pow(dot, polygon.specularPower);
+          const factor = Math.pow(dot, polygon.specularPower ?? 32);
           let intensitySpecular = multiplyColors(specular, intensityRGB);
           intensitySpecular = scaleColor(intensitySpecular, factor);
           intensitySpecular = scaleColor(

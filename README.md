@@ -44,10 +44,15 @@ So, I fired up an instance of VSCode and not Cursor so I won't be tempted to thr
 - [x] Add a Gouraud/texture shader that extends the Gouraud shader by being able to interpolate over the coordinates of a texture to map pixels onto our polygons with added UV coordinates.
 - [x] Add support for specular light.
 - [x] Add a near-plane clipper.
+- [x] Set up a demo scene to show the engine's capabilities.
 
 ### Notes
 
 One thing I didn't anticipate was that we'd have to build up the list of vertices and polygons from scratch once we introduced the near-z clipping. That kind of upended the whole architecture I had going, treating the polygons as defined once and then just set and forgotten, treated as static data. Having to check if polygons are clipping on the near-z limit demands that we actually create new vertices and polygons on the fly. For example lighting is then kind of messed up, since so far I made a connection between the lighting values and the polygons based on the `id` I'd attribute to the polygons at instantiation. That won't work anymore now. So now, I decided to compromise by creating new instances of the polygons based on clones inside the `near-plane-clipping.js` function, getting the `lighting` values out before that, and then just putting them on a public member `lighting` that the polygons themselves own. That way they end up in the right place, and later we can read them from the polygons rather than matching them on `id` as we apply the lighting in the `drawTexturedGouraudShaded` method on the `Graphics` class. But I'm not loving that! For this go it's fine, but I'd reconsider how I'd treat the polygons next time, knowing now that they won't be as static due to this clipping step as I initially thought they'd turn out to be.
+
+Some confessions: I did use a little AI to help me out with the `./scripts/generate-room.js` script. Mainly mapping the UV, vertex and polygon sequence I was just confusing the hell out of myself trying to get the orientation right. I did feed this through Claude giving a just-fix-it prompt. The whole script is a big old mess anyway, but I figured okay my point is not to prove that I can write a script that can produce a room, I am okay with kind of leaving that up to LLM scaffolding partly. My point was to then render the room properly.
+
+I also scanned the modules I had with an LLM to spot bugs once I was done. It was actually good because they were the kinds of bugs I'd also miss, like spelling errors, getting directions wrong or forgetting to convert array-to-object situations. JavaScript kinda sucks for this actually, since you get away with a lot of murder. Using TypeScript probably would already help there. I've committed the bugfixes in the last commit.
 
 ### Next steps
 
@@ -56,4 +61,11 @@ One thing I didn't anticipate was that we'd have to build up the list of vertice
 - Try a baked-in scene where the light values are already pre-calculated using a light map.
 - Try making use of a BSP tree.
 - Use the quaternions-based camera system.
-- Reconsider the polygons setup, keeping in mind near-z clipping.
+
+## What I'd do differently in a next iteration
+
+- Probably use a typed or compiled language (TS, Rust or C++). JavaScript is too forgiving.
+- Set up tests. Many confusions I could probably avoid if I'd set up the test at the start.
+- Set up debugging, like the birds-eye-view or light source highlighting.
+- Decide on object or array for representing the vectors. C/C++ is much better equipped for this, because it lets you be agnostic with `union` types. Here it's annoying to have to go back and forth between the two representations.
+- Figure out how to handle polygons, anticipating near-z clipping. I might have considered polygons as more dynamic or at least treated the whole thing differently if I knew I would have to rebuild the whole vertices and polygons mesh again once we got to the near-z clipping stage.

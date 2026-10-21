@@ -8,6 +8,7 @@ export class DirectionalLight {
     this.color = color;
     // Just to be safe, we store this as normal here if the consumer didn't normalize already
     this.direction = Vec3.normal(direction);
+    this.toLight = Vec3.scale(direction, -1);
     this.normalizedColor = color.map((component) => component / 255);
   }
 
@@ -24,6 +25,6 @@ export class DirectionalLight {
   }
 
   getDirectionNormal() {
-    return this.direction;
+    return this.toLight;
   }
 }

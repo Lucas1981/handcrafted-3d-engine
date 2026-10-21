@@ -23,6 +23,7 @@ export class Polygon {
     }
     this.uvs = data?.uvs ? JSON.parse(JSON.stringify(data.uvs)) : null;
     this.lighting = [];
+    this.specularPower = data?.specularPower || 32;
   }
 
   getTexture() {

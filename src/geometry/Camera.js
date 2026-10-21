@@ -48,13 +48,22 @@ export class Camera {
   }
 
   // Method to get the point right in front of us, see LaMothe p. 666-667
-  getTarget() {
+  getDirection() {
     const heading = degToRad * this.heading;
     const elevation = degToRad * this.elevation;
     const r = this.rho * Math.sin(elevation); // r = rho * sin(phi)
-    const z = -r * Math.sin(heading); // z becomes x = -r * sin(theta)
-    const x = -1 * this.rho * Math.cos(elevation); // x becomes -y = -1 * rho * cos(phi)
-    const y = r * Math.cos(heading); // y becomes z = r * cos(theta)
-    return Vec3.add(this.pos, { x, y, z });
+    return {
+      z: -r * Math.sin(heading), // z becomes x = -r * sin(theta)
+      x: -1 * this.rho * Math.cos(elevation), // x becomes -y = -1 * rho * cos(phi),
+      y: r * Math.cos(heading), // y becomes z = r * cos(theta)
+    };
+  }
+
+  getTarget() {
+    return Vec3.add(this.pos, this.getDirection());
+  }
+
+  moveForward(amount) {
+    this.pos = Vec3.add(this.pos, Vec3.scale(this.getDirection(), amount));
   }
 }

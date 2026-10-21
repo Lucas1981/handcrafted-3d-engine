@@ -3,6 +3,8 @@ import { WIDTH, HEIGHT } from "../constants";
 import { drawTriangleGouraudShaded } from "./shaders/gouraud-shader";
 import { drawTriangleTexturedGouraudShaded } from "./shaders/textured-gouraud-shader";
 
+const fontSize = 20;
+
 export class Graphics {
   constructor(canvas) {
     this.ctx = canvas.getContext("2d");
@@ -108,5 +110,11 @@ export class Graphics {
     this.ctx.fillStyle = fill;
     this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
     this.ctx.fill();
+  }
+
+  write(x, y, text) {
+    this.ctx.font = `${fontSize}px Arial`;
+    this.ctx.fillStyle = "white";
+    this.ctx.fillText(`${text} FPS`, 5, fontSize);
   }
 }

@@ -30,6 +30,7 @@ export class Renderer {
     const view = camera.getCameraTransformMatrix();
     this.#clearScreen();
     this.graphics.resetZBuffer();
+    const p = performance.now();
     this.#pipeline(view, meshes, lights, camera, ambient);
     this.graphics.putImageData();
     if (DRAW_LIGHT_SOURCES) {
@@ -161,5 +162,9 @@ export class Renderer {
 
   #clearScreen() {
     this.graphics.clearScreenWithImageData();
+  }
+
+  write(x, y, text) {
+    this.graphics.write(x, y, text);
   }
 }
